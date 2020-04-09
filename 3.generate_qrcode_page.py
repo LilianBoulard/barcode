@@ -16,7 +16,7 @@ DPI_SCAN = 1000
 DPI_IMP = 224
 
 # Dossier source, là où le script ira chercher les QR codes à imprimer.
-SRC = "C:/dossier/pdf_a_imprimer/"
+SRC = "C:/dossier/images_a_imprimer/"
 # Extension des fichiers qu'il faut placer sur la feuille, se tranvant dans le dossier ci-dessus. Il faut que l'extension soit celle d'une image (png, jpg, etc).
 EXT_DST = ".png"
 # Nom du fichier de sortie - la page à imprimer. Ne pas inclure l'extension.
