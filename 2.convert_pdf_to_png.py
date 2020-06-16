@@ -139,9 +139,12 @@ def cropImage(fl):
 if __name__ == "__main__":
     tic = time()
     pool = ThreadPool(cpu_count())
-    # Pour chaque fichier trouvé dans le dossier SRC, on le converti en PDF en appelant la fonction convertPdf
+    # Pour chaque fichier PDF trouvé dans le dossier SRC, on le converti en image en appelant la fonction convertPdf
     pool.map(convertPdf, os.listdir(SRC))
     # Pour chaque fichier trouvé dans le dossier courant, on appelle la fonction cropImage
     pool.map(cropImage, os.listdir(os.path.dirname(os.path.realpath(__file__)) + "\\"))
+    # On supprime tous les fichiers PDF du dossier source
+    for fl in os.listdir(SRC):
+        os.remove(SRC + fl)
     tac = time()
     input("Terminé en {} minutes, {} secondes. Appuyez sur entrée pour quitter...".format(int((tac-tic) / 60), round((tac - tic) % 60, 3)))
