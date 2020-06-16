@@ -40,7 +40,7 @@ def install_module(package):
         if subprocess.check_call([sys.executable, "-m", "pip", "install", package]) == 0:
             return True
     except subprocess.CalledProcessError as e:
-        input("Erreur rencontrée lors de l'installation du module \"{}\" : {}\nMerci de l'installer manuellement en utilisant pip.".format(package, e))
+        input(f"Erreur rencontrée lors de l'installation du module \"{package}\" : {e}\nMerci de l'installer manuellement en utilisant pip.")
         return False
 
 
@@ -78,20 +78,23 @@ def createSSHClient(server, port, user, password):
             client.connect(server, port, user, password)
             break
         except paramiko.ssh_exception.AuthenticationException:
-            password = getpass("Le mot de passe entré est incorrect.\nVeuillez entrer le mot de passe du compte \"{}\"\n>".format(user))
+            password = getpass(f"Le mot de passe entré est incorrect.\nVeuillez entrer le mot de passe du compte \"{user}\"\n>")
     return client
 
 
 # Demande de confirmation.
-print("Le script va copier à l'emplacement \"{copyDestination}\" les fichiers nommés de la sorte : \"{qrCodeWildcard}\", se trouvant sur le serveur \"{server}\" à l'emplacement \"{remoteQRcodesLocation}\",  en utilisant l'utilisateur distant \"{user}\".\n".format(user=user, server=server, remoteQRcodesLocation=remoteQRcodesLocation, qrCodeWildcard=qrCodeWildcard, copyDestination=copyDestination))
+print(f"Le script va copier à l'emplacement \"{copyDestination}\" les fichiers nommés de la sorte : \"{qrCodeWildcard}\", se trouvant sur le serveur \"{server}\" à l'emplacement \"{remoteQRcodesLocation}\",  en utilisant l'utilisateur distant \"{user}\".\n")
 input("Appuyez sur entrée pour continuer. Pour annuler l'opération, fermez cette fenêtre ou faites Ctrl + C.")
 
 # Demande le mot de passe du compte distant
-password = getpass("Veuillez entrer le mot de passe du compte \"{}\"\n>".format(user))
+password = getpass(f"Veuillez entrer le mot de passe du compte \"{user}\"\n>")
 
 ssh = createSSHClient(server, port, user, password)
 with SCPClient(ssh.get_transport(), sanitize = lambda x: x) as scp:
     # On lance la commande en local
     scp.get(r"{remoteQRcodesLocation}{qrCodeWildcard}".format(remoteQRcodesLocation=remoteQRcodesLocation, qrCodeWildcard=qrCodeWildcard), r"{copyDestination}".format(copyDestination=copyDestination))
+
+ssh.exec_command(f"sudo mv {remoteQRcodesLocation}*.pdf {remoteQRcodesLocation}old/")
+
 
 input("Terminé. Appuyez sur entrée pour quitter...")
